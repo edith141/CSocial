@@ -1,12 +1,10 @@
 const express = require('express')
 const router = express.Router()
+const usersController = require('./controller/usersControler')
 
-router.get('/', (req, res) => {
-    res.render('home-guest.ejs')
-})
+router.get('/', usersController.home)
 
-router.get('/about', (req, res) => {
-    res.send('lalalala')
-})
+
+router.post('/SignUp', usersController.signUp)
 
 module.exports = router

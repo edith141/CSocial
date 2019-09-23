@@ -1,11 +1,60 @@
+const usersColl = require('../dbase').collection('users')
+const validator = require('validator')
+
+
+
 let User = function(data)  {
-    this.data = data
+    this.data = data 
+    this.errors = []
 }
 
-User.prototype.register = () => {
-    //UserData
+User.prototype.sanitize = function() {
+    //stop mallicious code from being submitted
 
+    this.data = {
+        username: this.data.username,
+        email: this.data.email,
+        password: this.data.password
+    }
+
+
+    if (typeof(this.data.username) != 'string') {
+        this.data.username = String(this.data.username)
+    }
+    if (typeof(this.data.password) != 'string') {
+        this.data.password = String(this.data.password)
+    }
+    if (typeof(this.data.email) != 'string') {
+        this.data.email = String(this.data.email)
+    }
+}
+
+User.prototype.validate = function() {
     //ValidSignUp?
+    if (!validator.isAlphanumeric(this.data.username)) {
+        this.errors.push(this.data.username + "is not a valid username")
+    }
+    if (this.data.username.length < 5 || this.data.username.length > 12 ) {
+        this.errors.push("not a valid username. Should be between 5 and 12 char")
+    }
+    if (this.data.password == "") {
+        this.errors.push(this.data.username + "is not a valid username")
+    }
+    if (this.data.password.length < 9 || this.data.username.length > 36 ) {
+        this.errors.push("not a valid password. Should be between 9 and 36 char")
+    }
+}
+
+User.prototype.register = function() {
+    //UserData safe & valid?
+    this.sanitize()
+    this.validate()
+
+    //then save it
+    if (this.errors.length == 0) {
+        usersColl.insertOne(this.data)
+    }
+
 }
 
 module.exports = User

@@ -31,17 +31,20 @@ User.prototype.sanitize = function() {
 
 User.prototype.validate = function() {
     //ValidSignUp?
-    if (!validator.isAlphanumeric(this.data.username)) {
-        this.errors.push(this.data.username + "is not a valid username")
+    if (!validator.isAlphanumeric(this.data.username) && (this.data.username.length < 5 || this.data.username.length > 12 )) {
+        this.errors.push(this.data.username + "Username must be 5-12 char long & can't have special characters.")
     }
-    if (this.data.username.length < 5 || this.data.username.length > 12 ) {
-        this.errors.push("not a valid username. Should be between 5 and 12 char")
+    // if (this.data.username.length < 5 || this.data.username.length > 12 ) {
+    //     this.errors.push("not a valid username. Should be between 5 and 12 char")
+    // }
+    if (validator.isEmail(this.data.email)) {
+        this.errors.push("not a valid email address.")
     }
-    if (this.data.password == "") {
-        this.errors.push(this.data.username + "is not a valid username")
-    }
-    if (this.data.password.length < 9 || this.data.username.length > 36 ) {
-        this.errors.push("not a valid password. Should be between 9 and 36 char")
+    // if (this.data.password == "") {
+    //     this.errors.push(this.data.username + "is not a valid username")
+    // }
+    if (this.data.password == "" || this.data.password.length < 9 || this.data.username.length > 36 ) {
+        this.errors.push("A password should be between 9 and 36 characters.")
     }
 }
 

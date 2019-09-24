@@ -27,7 +27,13 @@ exports.signUp = (req, res) => {
     let user = new User(req.body)
     user.register()
     if (user.errors.length){
-        res.send(user.errors)
+        //res.send(user.errors)
+        req.flash('signUpErrors', user.errors)
+        req.session.save( () => {
+            res.redirect('/')
+            
+        })
+        
     }
     else{
         res.send('YAY!!!!')
@@ -49,6 +55,6 @@ exports.home = (req, res) => {
         res.render('home-empty.ejs', {currUserName: req.session.user.userName})
     }
     else {
-        res.render('home-guest.ejs', {lastLogin: req.flash('lastLoginInfo')})
+        res.render('home-guest.ejs', {lastLogin: req.flash('lastLoginInfo'), regErrors: req.flash('signUpErrors')})
     }
 }

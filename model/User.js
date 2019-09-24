@@ -3,52 +3,90 @@ const validator = require('validator')
 const crypt = require('bcryptjs')
 
 
-let User = function(data)  {
-    this.data = data 
+let User = function (data) {
+    this.data = data
     this.errors = []
 }
 
-User.prototype.sanitize = function() {
+User.prototype.userNameIsUnique = async function () {
+    if (this.errors.length == 0) {
+        let auser = await usersColl.findOne({ username: this.data.username })
+        // console.log('if true')
+        if (auser) {
+            console.log('user found')
+            this.errors.push("This username is already taken.")
+            // console.log("" + this.errors + 'from found!')
+            // console.log(this.errors)
+        }
+    }
+}
+User.prototype.emailIsUnique = async function () {
+    if (this.errors.length == 0) {
+        let auser = await usersColl.findOne({ email: this.data.email })
+        // console.log('if true')
+        if (auser) {
+            // console.log('user found')
+            this.errors.push("This email is already taken.")
+            // console.log("" + this.errors + 'from found!')
+            // console.log(this.errors)
+        }
+    }
+}
+User.prototype.sanitize = function () {
     //stop mallicious code from being submitted
 
     this.data = {
-        username: "" + this.data.username + "" .trim(),
+        username: "" + this.data.username + "".trim(),
         email: "" + this.data.email + "".trim(),
         password: "" + this.data.password
     }
 
     //redundant?
-    if (typeof(this.data.username) != 'string') {
+    if (typeof (this.data.username) != 'string') {
         this.data.username = String(this.data.username)
     }
-    if (typeof(this.data.password) != 'string') {
+    if (typeof (this.data.password) != 'string') {
         this.data.password = String(this.data.password)
     }
-    if (typeof(this.data.email) != 'string') {
+    if (typeof (this.data.email) != 'string') {
         this.data.email = String(this.data.email)
     }
 }
 
-User.prototype.validate = function() {
+User.prototype.validate = async function () {
+
+    // if (validator.isAlphanumeric(this.data.username) && this.data.username.length > 5 && this.data.username.length < 12) {
+    //     console.log('if true')
+    //     let auser = await usersColl.findOne({ username: this.data.username })
+    //     if (auser) {
+    //         console.log('user found')
+    //         this.errors.push("LALALA")
+    //         console.log("" + this.errors + 'from found!')
+    //         // console.log(this.errors)
+    //     }
+    // }
     //ValidSignUp?
-    if (!validator.isAlphanumeric(this.data.username) && (this.data.username.length < 5 || this.data.username.length > 12 )) {
+    if (!validator.isAlphanumeric(this.data.username) && (this.data.username.length < 5 || this.data.username.length > 12)) {
         this.errors.push(this.data.username + "Username must be 5-12 char long & can't have special characters.")
     }
     // if (this.data.username.length < 5 || this.data.username.length > 12 ) {
     //     this.errors.push("not a valid username. Should be between 5 and 12 char")
     // }
-    if (validator.isEmail(this.data.email)) {
+    if (!validator.isEmail(this.data.email)) {
         this.errors.push("not a valid email address.")
     }
     // if (this.data.password == "") {
     //     this.errors.push(this.data.username + "is not a valid username")
     // }
-    if (this.data.password == "" || this.data.password.length < 9 || this.data.username.length > 36 ) {
+    if (this.data.password == "" || this.data.password.length < 9 || this.data.username.length > 36) {
         this.errors.push("A password should be between 9 and 36 characters.")
     }
+
+    //if valid, check if it is unique.
+   
 }
 
-User.prototype.register = function() {
+User.prototype.register = function () {
     //UserData safe & valid?
     this.sanitize()
     this.validate()

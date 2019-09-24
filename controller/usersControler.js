@@ -23,20 +23,24 @@ exports.login = (req, res) => {
 
 }
 
-exports.signUp = (req, res) => {
+exports.signUp = async (req, res) => {
     let user = new User(req.body)
+    await user.userNameIsUnique()
+    await user.emailIsUnique()
     user.register()
-    if (user.errors.length){
+    if (user.errors.length != 0){
+        console.log('something in arrar')
         //res.send(user.errors)
         req.flash('signUpErrors', user.errors)
         req.session.save( () => {
+            console.log(user.errors)
             res.redirect('/')
-            
         })
-        
     }
-    else{
-        res.send('YAY!!!!')
+    else if (user.errors.length == 0){
+        console.log(user.errors)
+        req.session.user = {userName: user.data.username}
+        res.redirect('/')
     }
 }
 

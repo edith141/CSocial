@@ -5,6 +5,7 @@ const routes = require('./routes')
 const session = require('express-session')
 const MongoStorage = require('connect-mongo')(session)
 
+
 let sessinConfig  = session ({
     secret: "gTiueuLjghDWpmvduyQRUpb-412Kpcoks76rasjHFGSJ",
     resave : false,
@@ -20,6 +21,10 @@ app.use(express.urlencoded({extended: false}))
 app.use(express.json())
 app.use(express.static('public'))
 app.use(flash());
+app.use(function(req, res, next) {
+    res.locals.user = req.session.user
+    next()
+})
 
 app.set('views', 'views')
 app.set('view engine', 'ejs')

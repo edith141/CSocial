@@ -1,6 +1,18 @@
 const User = require('../model/User')
 
 
+exports.loggedIn = function(req, res, next) {
+    if (req.session.user) {
+        next()
+    }
+    else {
+        req.flash('lastLoginInfo', 'MUST BE LOGGED IN!')
+        req.session.save()
+        res.redirect('/')
+    }
+}
+
+
 exports.login = (req, res) => {
     let user = new User(req.body)
     user.login()
@@ -56,7 +68,7 @@ exports.logout = (req, res) => {
 exports.home = (req, res) => {
     if (req.session.user) {
         // console.log(req.session.user.userName)
-        res.render('home-empty.ejs', {currUserName: req.session.user.userName})
+        res.render('home-empty.ejs')
     }
     else {
         res.render('home-guest.ejs', {lastLogin: req.flash('lastLoginInfo'), regErrors: req.flash('signUpErrors')})

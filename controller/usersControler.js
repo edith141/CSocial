@@ -6,10 +6,13 @@ exports.login = (req, res) => {
     user.login()
     .then( (msg) => {
         req.session.user = {userName: user.data.username}
-        res.send(msg)
+        // res.send(msg)
+    })
+    .then(() => {
+        res.redirect('/')
     })
     .catch( (msg) => {
-        res.send(msg)
+        // res.send(msg)
     })
 
 }

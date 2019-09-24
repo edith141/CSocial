@@ -1,6 +1,6 @@
 const usersColl = require('../dbase').collection('users')
 const validator = require('validator')
-
+const crypt = require('bcryptjs')
 
 
 let User = function(data)  {
@@ -12,12 +12,12 @@ User.prototype.sanitize = function() {
     //stop mallicious code from being submitted
 
     this.data = {
-        username: this.data.username,
-        email: this.data.email,
-        password: this.data.password
+        username: "" + this.data.username + "" .trim(),
+        email: "" + this.data.email + "".trim(),
+        password: "" + this.data.password
     }
 
-
+    //redundant?
     if (typeof(this.data.username) != 'string') {
         this.data.username = String(this.data.username)
     }
@@ -52,9 +52,36 @@ User.prototype.register = function() {
 
     //then save it
     if (this.errors.length == 0) {
+        //hash the password before storing in db
+        let salt = crypt.genSaltSync(10)
+        this.data.password = crypt.hashSync(this.data.password, salt)
         usersColl.insertOne(this.data)
     }
+}
 
+User.prototype.login = function () {
+    this.sanitize()
+    return new Promise((resolved, rejected) => {
+        usersColl.findOne({ username: this.data.username })
+            .then((currUser) => {
+                if (currUser) {
+                    //USER EXIST
+                    if (crypt.compareSync(this.data.password, currUser.password)) {
+                        //USER CRED OKAY
+                        resolved("LOGGED IN")
+                    }
+                    else {
+                        rejected("INV PW")
+                    }
+                }
+                else {
+                    rejected("NP USER")
+                }
+            })
+            .catch((err) => {
+                console.log("UhOh! Something isn't right!" + err)
+            })
+    })
 }
 
 module.exports = User

@@ -17,8 +17,9 @@ exports.login = (req, res) => {
     let user = new User(req.body)
     user.login()
     .then( (msg) => {
-        req.session.user = {userName: user.data.username}
+        req.session.user = {userName: user.data.username, _id: user.data._id}
         // res.send(msg)
+        req.session.save()
     })
     .then( () => {
         res.redirect('/')
@@ -51,7 +52,8 @@ exports.signUp = async (req, res) => {
     }
     else if (user.errors.length == 0){
         console.log(user.errors)
-        req.session.user = {userName: user.data.username}
+        req.session.user = {userName: user.data.username,  _id: user.data._id}
+        req.session.save()
         res.redirect('/')
     }
 }

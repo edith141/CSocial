@@ -9,5 +9,8 @@ router.post('/SignUp', usersController.signUp)
 router.post('/logout', usersController.logout)
 
 router.get('/new-post', usersController.loggedIn, postsController.createScr)
+router.post('/new-post', usersController.loggedIn, postsController.createScr)
+router.get('/post/:id', postsController.viewPost)
+
 
 module.exports = router

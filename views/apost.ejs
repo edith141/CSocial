@@ -1,0 +1,23 @@
+<%- include('include/navbar.ejs') %>
+  <div class="container py-md-5 container--narrow">
+    <div class="d-flex justify-content-between">
+      <h2><%= post.title %></h2>
+      <span class="pt-2">
+        <a href="#" class="text-primary mr-2" data-toggle="tooltip" data-placement="top" title="Edit"><i class="fas fa-edit"></i></a>
+        <form class="delete-post-form d-inline" action="#" method="POST">
+          <button class="delete-post-button text-danger" data-toggle="tooltip" data-placement="top" title="Delete"><i class="fas fa-trash"></i></button>
+        </form>
+      </span>
+    </div>
+      
+    <p class="text-muted small mb-4">
+      <a href="#"><img class="avatar-tiny" src="https://avatars.dicebear.com/v2/initials/<%=post.author.username%>.svg"></a>
+      Posted by <a href="#"><%= post.author.username%></a> on <%= post.createdOn.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }) %></p>
+
+    <div class="body-content">
+      <%= post.body %>
+    </div>
+
+  </div>
+  
+  <%- include('include/footer.ejs') %>

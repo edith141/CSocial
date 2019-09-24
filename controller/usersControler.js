@@ -5,7 +5,7 @@ exports.login = (req, res) => {
     let user = new User(req.body)
     user.login()
     .then( (msg) => {
-        req.session.user = {lol: "lal"}
+        req.session.user = {userName: user.data.username}
         res.send(msg)
     })
     .catch( (msg) => {
@@ -25,13 +25,16 @@ exports.signUp = (req, res) => {
     }
 }
 
-exports.logout = () => {
-
+exports.logout = (req, res) => {
+    req.session.destroy()
+    console.log('LOGGED OUT!')
+    res.render('home-guest.ejs')
 }
 
 exports.home = (req, res) => {
     if (req.session.user) {
-        res.send('LOGGED IN!')
+        // console.log(req.session.user.userName)
+        res.render('home-empty.ejs', {currUserName: req.session.user.userName})
     }
     else {
         res.render('home-guest.ejs')

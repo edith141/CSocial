@@ -6,7 +6,7 @@ denv.config()
 
 const cnxn = process.env.CNXNSTR
 mdb.connect(cnxn, {useNewUrlParser: true, useUnifiedTopology: true}, (err, client) => {
-    module.exports = client.db()
+    module.exports = client
     require('./app').listen(process.env.PORT)
 })
 

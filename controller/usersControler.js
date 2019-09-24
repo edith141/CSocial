@@ -5,10 +5,11 @@ exports.login = (req, res) => {
     let user = new User(req.body)
     user.login()
     .then( (msg) => {
-        console.log(msg)
+        req.session.user = {lol: "lal"}
+        res.send(msg)
     })
     .catch( (msg) => {
-        console.log(msg)
+        res.send(msg)
     })
 
 }
@@ -29,5 +30,10 @@ exports.logout = () => {
 }
 
 exports.home = (req, res) => {
-    res.render('home-guest.ejs')
+    if (req.session.user) {
+        res.send('LOGGED IN!')
+    }
+    else {
+        res.render('home-guest.ejs')
+    }
 }

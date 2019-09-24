@@ -26,9 +26,12 @@ exports.signUp = (req, res) => {
 }
 
 exports.logout = (req, res) => {
-    req.session.destroy()
-    console.log('LOGGED OUT!')
-    res.render('home-guest.ejs')
+    req.session.destroy(() => {
+        // res.render('home-guest.ejs')
+        res.redirect('/')
+    })
+    // console.log('LOGGED OUT!')
+    // res.render('home-guest.ejs')
 }
 
 exports.home = (req, res) => {

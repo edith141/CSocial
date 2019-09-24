@@ -1,5 +1,6 @@
 const express = require('express')
 const app = express()
+const flash = require('connect-flash');
 const routes = require('./routes')
 const session = require('express-session')
 const MongoStorage = require('connect-mongo')(session)
@@ -12,11 +13,13 @@ let sessinConfig  = session ({
     store: new MongoStorage({client: require('./dbase')})
 })
 
+
 app.use(sessinConfig)
 
 app.use(express.urlencoded({extended: false}))
 app.use(express.json())
 app.use(express.static('public'))
+app.use(flash());
 
 app.set('views', 'views')
 app.set('view engine', 'ejs')

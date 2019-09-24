@@ -8,11 +8,17 @@ exports.login = (req, res) => {
         req.session.user = {userName: user.data.username}
         // res.send(msg)
     })
-    .then(() => {
+    .then( () => {
         res.redirect('/')
     })
     .catch( (msg) => {
         // res.send(msg)
+        console.log(msg)
+        // just a npm pckg to bundle one-off flash msg obj in session like in express 2.X 
+        req.flash('lastLoginInfo', 'Invalid credentials. Retry with correct username & password.')
+        
+    }).then( () => {
+        res.redirect('/')
     })
 
 }
@@ -43,6 +49,6 @@ exports.home = (req, res) => {
         res.render('home-empty.ejs', {currUserName: req.session.user.userName})
     }
     else {
-        res.render('home-guest.ejs')
+        res.render('home-guest.ejs', {lastLogin: req.flash('lastLoginInfo')})
     }
 }

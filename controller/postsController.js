@@ -86,3 +86,19 @@ exports.editPost = function(req, res) {
         req.flash("errors", "insufficient permissions")
     })
 }
+
+exports.deletePost = function (req, res) {
+    Post.delete(req.params.id, req.visitorId)
+    .then(() => {
+        req.flash("success", 'Post deleted!')
+        req.session.save(() => {
+            res.redirect(`/UserProfile/${req.session.user.userName}`)
+        })
+    })
+    .catch( () => {
+        req.flash("errors", 'Permission error!')
+        req.session.save(() => {
+            res.redirect(`/`)
+        })
+    })
+}

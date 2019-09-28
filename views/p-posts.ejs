@@ -1,6 +1,9 @@
 <%- include('include/navbar.ejs') %>
 
 <div class="container py-md-5 container--narrow">
+
+    <%- include('include/flashmsgs.ejs') %>
+
         <h2><img class="avatar-small" src="https://avatars.dicebear.com/v2/initials/<%= profileUserName %>.svg"> <%= profileUserName %>  
           <form class="ml-2 d-inline" action="#" method="POST">
             <button class="btn btn-primary btn-sm">Follow <i class="fas fa-user-plus"></i></button>

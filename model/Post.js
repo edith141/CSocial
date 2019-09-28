@@ -195,6 +195,26 @@ Post.getOneById = function(id, visitorId) {
 // }
 
 
+Post.delete = (postIdToDel, CurrUserId) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let post = await Post.getOneById(postIdToDel, CurrUserId)
+            if (post.isVisitorOwner) {
+                await postsColl.deleteOne({_id: new ObjectID(postIdToDel)})
+                // res.redirect(`/UserProfile/${CurrUserId}`)
+                resolve()
+            }
+            else {
+                reject()
+            }
+        }
+
+        catch {
+            reject()
+        }
+    })
+}
+
 
 Post.getPostByUserId = (userID) => {
     return Post.postQuery([

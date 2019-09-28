@@ -30,7 +30,18 @@ exports.viewPost = async function (req, res) {
 exports.viewPostEditScr = async function (req, res) {
     try {
         let post = await Post.getOneById(req.params.id)
-        res.render("edit-post.ejs", {post: post})
+
+        //render only if user is the owener of the post!
+        if (post.authorId == req.visitorId) {
+            res.render("edit-post.ejs", {post: post})
+        }
+        else {
+            req.flash("errors", 'insufficient permissions!')
+            req.session.save( () => {
+                res.redirect('/')
+            })
+        }
+        
     }
     catch {
         res.render('e404.ejs')

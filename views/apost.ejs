@@ -18,7 +18,7 @@
       Posted by <a href="#"><%= post.author.username%></a> on <%= post.createdOn.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }) %></p>
 
     <div class="body-content">
-      <%= post.body %>
+      <%- allowUserHTML(post.body) %>
     </div>
 
   </div>

@@ -86,18 +86,42 @@ User.prototype.validate = async function () {
    
 }
 
+// User.prototype.register = function () {
+//     //UserData safe & valid?
+//     this.sanitize()
+//     this.validate()
+
+//     //then save it
+//     if (this.errors.length == 0) {
+//         //hash the password before storing in db
+//         let salt = crypt.genSaltSync(10)
+//         this.data.password = crypt.hashSync(this.data.password, salt)
+//         usersColl.insertOne(this.data)
+//     }
+// }
 User.prototype.register = function () {
     //UserData safe & valid?
     this.sanitize()
     this.validate()
 
     //then save it
-    if (this.errors.length == 0) {
-        //hash the password before storing in db
-        let salt = crypt.genSaltSync(10)
-        this.data.password = crypt.hashSync(this.data.password, salt)
-        usersColl.insertOne(this.data)
-    }
+    return new Promise((resolved, rejected) => {
+        if (this.errors.length == 0) {
+            //hash the password before storing in db
+            let salt = crypt.genSaltSync(10)
+            this.data.password = crypt.hashSync(this.data.password, salt)
+            usersColl.insertOne(this.data, function (error, response) {
+                if(error) {
+                    rejected('Error occurred while inserting');
+                   // return 
+                } else {
+                   resolved(response.ops[0]);
+                  // return 
+                }
+            })
+        }
+    })
+    
 }
 
 User.prototype.login = function () {
@@ -109,7 +133,8 @@ User.prototype.login = function () {
                     //USER EXIST
                     if (crypt.compareSync(this.data.password, currUser.password)) {
                         //USER CRED OKAY
-                        resolved("LOGGED IN")
+                        console.log(currUser._id)
+                        resolved(currUser)
                     }
                     else {
                         rejected("INV PW")
@@ -122,6 +147,36 @@ User.prototype.login = function () {
             .catch((err) => {
                 console.log("UhOh! Something isn't right!" + err)
             })
+    })
+}
+
+
+User.getUserByUserName = function(userName) {
+    return new Promise(function (resolve, reject) {
+        if (typeof(userName) != 'string' ) {
+            //if someone tries to pass something other than a str
+            reject('Something Fisfy Here!')
+            return
+        }
+
+        usersColl.findOne({username: userName})
+        .then( (userDoc) => {
+            //if user found
+            if (userDoc) {
+                userDoc = new User(userDoc)
+                userDoc = {
+                    _id: userDoc.data._id,
+                    username: userDoc.data.username
+                }
+                resolve(userDoc)
+            }
+            else {
+                reject()
+            }
+        })
+        .catch( () => {
+            reject('UhOh!')
+        })
     })
 }
 

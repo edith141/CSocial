@@ -7,13 +7,17 @@ const Post = function (data, userId) {
 }
 
 Post.prototype.createPost = function() {
+    console.log('going to call prom')
     return new Promise( (resolve, reject) => {
         this.sanitize()
         this.validate()
+        console.log('sanitized and validated post')
         if ( this.errors.length == 0 ) {
             //save to db 
+            console.log('have a post')
             postsColl.insertOne(this.data)
             .then( () => {
+                console.log('saved to db')
                 resolve()
             })
             .catch( () => {
@@ -39,8 +43,12 @@ Post.prototype.sanitize = function() {
         title: this.data.title,
         body: this.data.body,
         createdOn: new Date(),
+        // author: String(this.userId)
+        // author: ObjectID(this.userId)
         author: ObjectID(this.userId)
+        // author: this.userId
     }
+    console.log(this.userId)
 }
 
 Post.prototype.validate = function() {
@@ -53,14 +61,11 @@ Post.prototype.validate = function() {
 }
 
 
-Post.getOneById = function(id) {
+//duplicate!
+Post.postQuery = function(operations) {
     return new Promise( async function (resolve, reject) {
-        if (typeof(id) != 'string' || !ObjectID.isValid(id)) {
-            reject()
-            return
-        }
-        let posts = await postsColl.aggregate([
-            {$match: {_id: new ObjectID(id)}},
+        let aggoprs = operations.concat([
+            // {$match: {_id: new ObjectID(id)}},
             {$lookup: {from: 'users', localField: "author", foreignField: '_id', as: "docAuthor"}},
             {$project: {
                 title: 1, 
@@ -68,7 +73,8 @@ Post.getOneById = function(id) {
                 createdOn: 1, 
                 author: {$arrayElemAt: ['$docAuthor', 0]}
             }}
-        ]).toArray()
+        ])
+        let posts = await postsColl.aggregate(aggoprs).toArray()
 
         //remove creds
         posts = posts.map( (aPost) => {
@@ -78,6 +84,25 @@ Post.getOneById = function(id) {
 
             return aPost
         })
+
+        resolve(posts)
+    })
+}
+
+
+
+
+Post.getOneById = function(id) {
+    return new Promise( async function (resolve, reject) {
+        if (typeof(id) != 'string' || !ObjectID.isValid(id)) {
+            reject()
+            return
+        }
+        
+        let posts = await Post.postQuery([
+            {$match: {_id: new ObjectID(id)}}
+            // {$match: {_id: id}}
+        ])
 
         if (posts.length) {
             console.log(posts[0])
@@ -89,4 +114,50 @@ Post.getOneById = function(id) {
         }
     })
 }
+// Post.getOneById = function(id) {
+//     return new Promise( async function (resolve, reject) {
+//         if (typeof(id) != 'string' || !ObjectID.isValid(id)) {
+//             reject()
+//             return
+//         }
+//         let posts = await postsColl.aggregate([
+//             {$match: {_id: new ObjectID(id)}},
+//             {$lookup: {from: 'users', localField: "author", foreignField: '_id', as: "docAuthor"}},
+//             {$project: {
+//                 title: 1, 
+//                 body: 1, 
+//                 createdOn: 1, 
+//                 author: {$arrayElemAt: ['$docAuthor', 0]}
+//             }}
+//         ]).toArray()
+
+//         //remove creds
+//         posts = posts.map( (aPost) => {
+//             aPost.author = {
+//                 username: aPost.author.username
+//             }
+
+//             return aPost
+//         })
+
+//         if (posts.length) {
+//             console.log(posts[0])
+//             resolve(posts[0])
+//         }
+
+//         else {
+//             reject()
+//         }
+//     })
+// }
+
+
+
+Post.getPostByUserId = (userID) => {
+    return Post.postQuery([
+        {$match: {author: userID}},
+        {$sort: {createdOn: -1}}
+    ])
+}
+
 module.exports = Post

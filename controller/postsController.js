@@ -8,6 +8,7 @@ exports.createScr = function (req, res) {
 exports.createPost = function (req, res) {
     let post = new Post(req.body, req.session.user._id)
     post.createPost().then( () => {
+        console.log(req.session.user._id)
         res.send("NEW POST DONE!")
     }).catch( (err) => {
         console.log(err)

@@ -1,0 +1,28 @@
+<%- include('include/navbar.ejs') %>
+
+<div class="container py-md-5 container--narrow">
+        <h2><img class="avatar-small" src="https://avatars.dicebear.com/v2/initials/<%= profileUserName %>.svg"> <%= profileUserName %>  
+          <form class="ml-2 d-inline" action="#" method="POST">
+            <button class="btn btn-primary btn-sm">Follow <i class="fas fa-user-plus"></i></button>
+            <!-- <button class="btn btn-danger btn-sm">Stop Following <i class="fas fa-user-times"></i></button> -->
+          </form>
+        </h2>
+      
+        <div class="profile-nav nav nav-tabs pt-2 mb-4">
+          <a href="#" class="profile-nav-link nav-item nav-link active">Posts: 3</a>
+          <a href="#" class="profile-nav-link nav-item nav-link ">Followers: 3</a>
+          <a href="#" class="profile-nav-link nav-item nav-link ">Following: 2</a>
+        </div>
+      
+        <div class="list-group">
+          <% posts.forEach( (apost) => { %>
+            <a href="/post/<%= apost._id %>" class="list-group-item list-group-item-action">
+              <img class="avatar-tiny" src="https://avatars.dicebear.com/v2/initials/<%= apost.author.username %>.svg">
+              <strong><%= apost.title %></strong> on <%= apost.createdOn.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }) %>
+            </a>
+
+        <%  }) %>
+        </div>
+      </div>
+
+<%- include('include/footer.ejs') %>

@@ -121,6 +121,7 @@ Post.postQuery = function(operations, visitorId) {
         //remove creds
         posts = posts.map( (aPost) => {
             aPost.isVisitorOwner = aPost.authorId.equals(visitorId)
+            // aPost.authorId = undefined
             aPost.author = {
                 username: aPost.author.username
             }
@@ -221,6 +222,19 @@ Post.getPostByUserId = (userID) => {
         {$match: {author: userID}},
         {$sort: {createdOn: -1}}
     ])
+}
+
+Post.search = function (searchTerm) {
+    return new Promise(async (resolve, reject) => {
+        if (typeof(searchTerm) == "string") {
+            let posts = await Post.postQuery([
+                {$match: {$text: {$search: searchTerm}}},
+                {$sort: {score: {$meta: "textScore"}}}
+            ])
+            resolve(posts)
+        }
+    })
+
 }
 
 module.exports = Post

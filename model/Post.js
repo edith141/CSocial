@@ -17,9 +17,9 @@ Post.prototype.createPost = function() {
             //save to db 
             console.log('have a post')
             postsColl.insertOne(this.data)
-            .then( () => {
+            .then( (info) => {
                 console.log('saved to db')
-                resolve()
+                resolve(info.ops[0]._id)
             })
             .catch( () => {
                 this.errors.push("UhOh! Something doesn't seem right here. Please try again in some time.")

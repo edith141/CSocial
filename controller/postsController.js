@@ -7,11 +7,21 @@ exports.createScr = function (req, res) {
 
 exports.createPost = function (req, res) {
     let post = new Post(req.body, req.session.user._id)
-    post.createPost().then( () => {
+    post.createPost().then( (newId) => {
         console.log(req.session.user._id)
-        res.send("NEW POST DONE!")
+        // res.send("NEW POST DONE!")
+        req.flash("success", 'New post created!')
+        req.session.save( () => {
+            res.redirect(`/post/${newId}`)
+        })
     }).catch( (err) => {
         console.log(err)
+        err.forEach( (e) => {
+            req.flash("errors", 'e')
+            req.session.save( () => {
+                res.redirect('/new-post')
+            })
+        })
     })
 }
 

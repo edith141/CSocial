@@ -5,6 +5,8 @@
 
         <%- include('include/flashmsgs.ejs') %>
 
+        <a href="/post/<%= post._id %>" class="mb-3" >&laquo; Back to post</a>
+
     <form action="/post/<%= post._id %>/edit" method="POST">
       <div class="form-group">
         <label for="post-title" class="text-muted mb-1"><small>Title</small></label>

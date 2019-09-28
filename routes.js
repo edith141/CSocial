@@ -11,8 +11,8 @@ router.post('/logout', usersController.logout)
 router.get('/new-post', usersController.loggedIn, postsController.createScr)
 router.post('/new-post', usersController.loggedIn, postsController.createPost)
 router.get('/post/:id', postsController.viewPost)
-router.get('/post/:id/edit', postsController.viewPostEditScr)
-router.post('/post/:id/edit', postsController.editPost)
+router.get('/post/:id/edit', usersController.loggedIn, postsController.viewPostEditScr)
+router.post('/post/:id/edit', usersController.loggedIn, postsController.editPost)
 
 
 

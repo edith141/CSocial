@@ -1,9 +1,10 @@
 const postsColl = require('../dbase').db().collection('posts')
 const ObjectID = require('mongodb').ObjectID
-const Post = function (data, userId) {
+const Post = function (data, userId, requestedPostId) {
     this.data = data
     this.userId = userId
     this.errors = []
+    this.requestedPostId = requestedPostId
 }
 
 Post.prototype.createPost = function() {
@@ -29,9 +30,46 @@ Post.prototype.createPost = function() {
             reject(this.errors)
         }
     } )
-
-    
 }
+
+
+Post.prototype.update = function () {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let post =  await Post.getOneById(this.requestedPostId, this.userId)
+            // if or not
+            if (post.isVisitorOwner) {
+                //update db
+                let status = await this.updateNow()
+                resolve(status)
+            }
+            else {
+                reject()
+            }
+        }
+        catch {
+            
+        }
+    })
+}
+
+Post.prototype.updateNow = function () {
+    return new Promise( async (resolve, reject) => {
+        this.sanitize()
+        this.validate()
+        if (this.errors.length == 0) {
+            await postsColl.findOneAndUpdate({_id: new ObjectID(this.requestedPostId)}, {$set: {title: this.data.title, body: this.data.body}})
+            resolve("success")
+        }
+        else {
+            resolve("failed")
+
+        }
+
+    })
+}
+
+
 
 Post.prototype.sanitize = function() {
     this.data.title = String(this.data.title).trim()
@@ -62,7 +100,7 @@ Post.prototype.validate = function() {
 
 
 //duplicate!
-Post.postQuery = function(operations) {
+Post.postQuery = function(operations, visitorId) {
     return new Promise( async function (resolve, reject) {
         let aggoprs = operations.concat([
             // {$match: {_id: new ObjectID(id)}},
@@ -71,6 +109,7 @@ Post.postQuery = function(operations) {
                 title: 1, 
                 body: 1, 
                 createdOn: 1, 
+                authorId: "$author",
                 author: {$arrayElemAt: ['$docAuthor', 0]}
             }}
         ])
@@ -78,6 +117,7 @@ Post.postQuery = function(operations) {
 
         //remove creds
         posts = posts.map( (aPost) => {
+            aPost.isVisitorOwner = aPost.authorId.equals(visitorId)
             aPost.author = {
                 username: aPost.author.username
             }
@@ -92,7 +132,7 @@ Post.postQuery = function(operations) {
 
 
 
-Post.getOneById = function(id) {
+Post.getOneById = function(id, visitorId) {
     return new Promise( async function (resolve, reject) {
         if (typeof(id) != 'string' || !ObjectID.isValid(id)) {
             reject()
@@ -102,7 +142,7 @@ Post.getOneById = function(id) {
         let posts = await Post.postQuery([
             {$match: {_id: new ObjectID(id)}}
             // {$match: {_id: id}}
-        ])
+        ], visitorId)
 
         if (posts.length) {
             console.log(posts[0])

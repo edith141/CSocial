@@ -7,7 +7,7 @@ exports.loggedIn = function(req, res, next) {
         next()
     }
     else {
-        req.flash('lastLoginInfo', 'MUST BE LOGGED IN!')
+        req.flash('errors', 'MUST BE LOGGED IN!')
         req.session.save()
         res.redirect('/')
     }
@@ -33,7 +33,7 @@ exports.login = (req, res) => {
         // res.send(msg)
         console.log(msg)
         // just a npm pckg to bundle one-off flash msg obj in session like in express 2.X 
-        req.flash('lastLoginInfo', 'Invalid credentials. Retry with correct username & password.')
+        req.flash('errors', 'Invalid credentials. Retry with correct username & password.')
         
     }).then( () => {
         res.redirect('/')
@@ -107,7 +107,8 @@ exports.home = (req, res) => {
         res.render('home-empty.ejs')
     }
     else {
-        res.render('home-guest.ejs', {lastLogin: req.flash('lastLoginInfo'), regErrors: req.flash('signUpErrors')})
+        res.render('home-guest.ejs', {regErrors: req.flash('signUpErrors')})
+        // res.render('home-guest.ejs', {errors: req.flash('errors'), regErrors: req.flash('signUpErrors')})
     }
 }
 

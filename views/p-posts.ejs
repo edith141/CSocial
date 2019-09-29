@@ -5,7 +5,7 @@
     <%- include('include/flashmsgs.ejs') %>
 
         <h2><img class="avatar-small" src="https://avatars.dicebear.com/v2/initials/<%= profileUserName %>.svg"> <%= profileUserName %>  
-          <form class="ml-2 d-inline" action="#" method="POST">
+          <form class="ml-2 d-inline" action="/addFollower/<%= profileUserName %>" method="POST">
             <button class="btn btn-primary btn-sm">Follow <i class="fas fa-user-plus"></i></button>
             <!-- <button class="btn btn-danger btn-sm">Stop Following <i class="fas fa-user-times"></i></button> -->
           </form>

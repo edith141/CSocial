@@ -14,8 +14,8 @@
     </div>
       
     <p class="text-muted small mb-4">
-      <a href="#"><img class="avatar-tiny" src="https://avatars.dicebear.com/v2/initials/<%=post.author.username%>.svg"></a>
-      Posted by <a href="#"><%= post.author.username%></a> on <%= post.createdOn.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }) %></p>
+      <a href="/UserProfile/<%= post.author.username %>"><img class="avatar-tiny" src="https://avatars.dicebear.com/v2/initials/<%=post.author.username%>.svg"></a>
+      Posted by <a href="/UserProfile/<%= post.author.username %>"><%= post.author.username%></a> on <%= post.createdOn.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }) %></p>
 
     <div class="body-content">
       <%- allowUserHTML(post.body) %>

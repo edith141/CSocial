@@ -31,6 +31,7 @@ PORT=3000
 * Posts render Markdown correctly to format the post body
 * Every user input is sanitized to prevent any malicious code injection.
 * Server-side validation for security reasons. 
+* MVC arcitecture is followed throughout.
 
 [LIVE DEMO](https://csocial141.herokuapp.com/)
 

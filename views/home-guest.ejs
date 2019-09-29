@@ -8,15 +8,15 @@
     <% } %>
   <div class="row align-items-center">
     <div class="col-lg-7 py-3 py-md-5">
-      <h1 class="display-3">Remember Writing?</h1>      
-      <p class="lead text-muted">Are you sick of short tweets and impersonal &ldquo;shared&rdquo; posts that are reminiscent of the late 90&rsquo;s email forwards? We believe getting back to actually writing is the key to enjoying the internet again.</p>
+      <h1 class="display-3">Remember Private Social Networks?</h1>      
+      <p class="lead text-muted">Are you sick of mixing personal and impersonal &ldquo;college/work&rdquo; posts that are reminiscent of the late 90&rsquo;s memos on your Social Media? College groups? We believe keeping a private social network for work/college is the key to enjoying the internet again.</p>
     </div>
     <div class="col-lg-5 pl-lg-5 pb-3 py-lg-5">
       <form action="/SignUp" method="POST" id="registration-form">
 
           <div class="form-group">
             <label for="username-register" class="text-muted mb-1"><small>Username</small></label>
-            <input name="username" id="username-register" class="form-control" type="text" placeholder="Pick a username" autocomplete="off" required>
+            <input name="username" id="username-register" class="form-control" type="text" placeholder="Pick a nice username" autocomplete="off" required>
           </div>
 
           <div class="form-group">
@@ -26,7 +26,7 @@
           
           <div class="form-group">
             <label for="password-register" class="text-muted mb-1"><small>Password</small></label>
-            <input name="password" id="password-register" class="form-control" type="password" placeholder="Create a password" required>
+            <input name="password" id="password-register" class="form-control" type="password" placeholder="Create a strong password" required>
           </div>
           
           <% regErrors.forEach( (err) => { %>
@@ -35,7 +35,7 @@
             
           
 
-          <button type="submit" class="py-3 mt-4 btn btn-lg btn-success btn-block">Sign up for OurApp</button>
+          <button type="submit" class="py-3 mt-4 btn btn-lg btn-success btn-block">Sign up for CSocial</button>
           
         </form>
       </div>

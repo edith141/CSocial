@@ -52,6 +52,12 @@ PORT=3000
 [![Image from Gyazo](https://i.gyazo.com/3e48483e152c0184c8238a7afc81f9b2.png)](https://gyazo.com/3e48483e152c0184c8238a7afc81f9b2)
 
 
+## Todo
+
+* Implement followers system (partly done. Ongoing Exams) 
+* Implement chat using socket.io
+
+
 ## Made for CodeCause coding challenge
 [MIT](https://choosealicense.com/licenses/mit/)
 
